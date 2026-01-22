@@ -19,6 +19,13 @@ initInput(canvas, () => {
 
 function gameLoop() {
     render(ctx, gameState, socket.id);
+    requestAnimationFrame(gameLoop);
 }
+
+// Debug
+console.log("Game started, waiting for players...");
+socket.on("connect", () => {
+    console.log("Connected to server with ID:", socket.id);
+});
 
 gameLoop();
