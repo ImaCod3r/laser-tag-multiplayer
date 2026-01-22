@@ -1,3 +1,5 @@
+import { Arena } from "./Arena";
+
 export class Player {
     id: string;
 
@@ -46,8 +48,12 @@ export class Player {
             dy /= len;
         }
 
-        this.x += dx * this.speed;
-        this.y += dy * this.speed;
+        const newX = this.x + dx * this.speed;
+        const newY = this.y + dy * this.speed;
+
+        // Validação dos limites da arena
+        this.x = Math.max(this.radius, Math.min(newX, Arena.WIDTH - this.radius));
+        this.y = Math.max(this.radius, Math.min(newY, Arena.HEIGHT - this.radius));
 
         this.angle = this.input.angle;
     }
