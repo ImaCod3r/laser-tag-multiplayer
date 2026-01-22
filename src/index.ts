@@ -13,8 +13,10 @@ const game = new Game(io);
 app.use(express.static(path.join(__dirname, "../public")));
 
 io.on('connection', (socket) => {
-    console.log('a user connected:', socket.id);
+    console.log('user connected:', socket.id);
     game.addPlayer(socket);
+
+    socket.on("pingCheck", (cb) => cb());
 
     socket.on('disconnect', () => {
         console.log('user disconnected:', socket.id);

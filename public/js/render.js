@@ -1,3 +1,5 @@
+import { drawHUD } from "./hud.js";
+
 export function render(ctx, state, myId) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
@@ -8,6 +10,9 @@ export function render(ctx, state, myId) {
 
     // Laser
     state.lasers.forEach(drawLaser.bind(null, ctx));
+
+    // Desenhar a HUD
+    drawHUD(ctx);
 }
 
 function drawPlayer(ctx, player, isMe) {

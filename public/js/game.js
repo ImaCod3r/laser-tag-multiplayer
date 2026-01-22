@@ -2,6 +2,7 @@ import { initInput } from "./input/index.js";
 import { initNetwork } from "./network.js";
 import { bindState, gameState } from "./state.js";
 import { render } from "./render.js";
+import { initHUD } from "./hud.js";
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -11,6 +12,7 @@ canvas.height = 600;
 
 const socket = initNetwork();
 bindState(socket);
+initHUD(socket);
 
 initInput(canvas, () => {
     const me = gameState.players.find(p => p.id === socket.id);
