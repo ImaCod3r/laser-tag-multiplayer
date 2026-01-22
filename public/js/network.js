@@ -1,4 +1,4 @@
-import { input } from "../input/index.js";
+import { input } from "./input/index.js";
 
 export function initNetwork() {
     const socket = io();

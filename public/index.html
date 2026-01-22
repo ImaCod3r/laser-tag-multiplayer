@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <title>Laser Tag 2D</title>
-  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
-  <canvas id="game"></canvas>
+  <canvas id="gameCanvas"></canvas>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script src="/js/socket.js"></script>
-  <script src="/js/game.js"></script>
+  <script type="module" src="/js/network.js"></script>
+  <script type="module" src="/js/game.js"></script>
 </body>
 </html>

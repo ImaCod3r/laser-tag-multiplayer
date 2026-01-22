@@ -1,5 +1,5 @@
-import { bindKeyboard } from "./keyboard";
-import { bindMouseAim } from "./mouse";
+import { bindKeyboard } from "./keyboard.js";
+import { bindMouseAim } from "./mouse.js";
 
 export const input = {
     up: false,
