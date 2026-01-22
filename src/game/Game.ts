@@ -24,8 +24,16 @@ export class Game {
             if (player) player.applyInput(input);
         })
 
-        socket.on("shoot", (angle) => {
-            this.lasers.push(new Laser(socket.id, angle));
+        socket.on("shoot", (data) => {
+            const player = this.players.get(socket.id);
+            if (player) {
+                this.lasers.push(new Laser(
+                    socket.id, 
+                    data.angle,
+                    player.x,
+                    player.y
+                ));
+            }
         });
 
     }

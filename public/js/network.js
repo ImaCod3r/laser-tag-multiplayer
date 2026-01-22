@@ -14,7 +14,9 @@ export function initNetwork() {
     }, 1000 / 30);
 
     window.addEventListener("mousedown", () => {
-        socket.emit("shoot");
+        socket.emit("shoot", {
+            angle: input.angle
+        });
     });
 
     return socket;
