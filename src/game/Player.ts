@@ -1,4 +1,4 @@
-import { Arena } from "./Arena";
+import { Physics } from "./Physics";
 
 export class Player {
     id: string;
@@ -51,9 +51,10 @@ export class Player {
         const newX = this.x + dx * this.speed;
         const newY = this.y + dy * this.speed;
 
-        // Validação dos limites da arena
-        this.x = Math.max(this.radius, Math.min(newX, Arena.WIDTH - this.radius));
-        this.y = Math.max(this.radius, Math.min(newY, Arena.HEIGHT - this.radius));
+        // Aplicar confinamento à arena
+        const clamped = Physics.clampToArena(newX, newY, this.radius);
+        this.x = clamped.x;
+        this.y = clamped.y;
 
         this.angle = this.input.angle;
     }
