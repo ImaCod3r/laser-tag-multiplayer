@@ -1,6 +1,6 @@
 import { initInput } from "./input/index.js";
 import { initNetwork } from "./network.js";
-import { bindState, gameState } from "./state.js";
+import { bindState, buffer } from "./state.js";
 import { render } from "./render.js";
 import { initHUD } from "./hud.js";
 
@@ -15,12 +15,23 @@ bindState(socket);
 initHUD(socket);
 
 initInput(canvas, () => {
+    const interpolatedState = buffer.getInterpolatedState();
+    if (!interpolatedState) {
+        return { x: 0, y: 0 };
+    }
+    
+    const gameState = interpolatedState;
+
     const me = gameState.players.find(p => p.id === socket.id);
     return me ? { x: me.x, y: me.y } : { x: 0, y: 0 };
 });
 
 function gameLoop() {
-    render(ctx, gameState, socket.id);
+    const interpolated = buffer.getInterpolatedState();
+    if(interpolated) {
+        render(ctx, interpolated, socket.id);
+    }
+
     requestAnimationFrame(gameLoop);
 }
 

@@ -1,11 +1,9 @@
-export const gameState = {
-    players: [],
-    lasers: [],
-};
+import { StateBuffer } from "./interpolation.js";
+
+export const buffer = new StateBuffer();
 
 export function bindState(socket) {
     socket.on("stateUpdate", (state) => {
-        gameState.players = state.players;
-        gameState.lasers = state.lasers;
+        buffer.push(state);
     });
 }

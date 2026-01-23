@@ -16,25 +16,24 @@ export function render(ctx, state, myId) {
 }
 
 function drawPlayer(ctx, player, isMe) {
-    ctx.beginPath()
-    ctx.arc(player.x, player.y, 15, 0, Math.PI * 2);
-    ctx.fillStyle = isMe ? "#00ffcc" : "#ffcc00";
-    ctx.fill();
+  ctx.beginPath();
+  ctx.arc(player.x, player.y, 12, 0, Math.PI * 2);
+  ctx.fillStyle = isMe ? "#00ffcc" : "#ffcc00";
+  ctx.fill();
 
-    // Direcao
-    ctx.beginPath()
-    ctx.moveTo(player.x, player.y);
-    ctx.lineTo(
-        player.x + Math.cos(player.angle),
-        player.y + Math.sin(player.angle)
-    );
-    ctx.strokeStyle = "#fff";
-    ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(player.x, player.y);
+ctx.lineTo(
+    player.x + Math.cos(player.angle) * 30, 
+    player.y + Math.sin(player.angle) * 30
+);
+ctx.strokeStyle = "#fff";
+ctx.stroke();
 }
 
 function drawLaser(ctx, laser) {
     ctx.beginPath();
-    ctx.arc(laser.x, laser.y, 2, 0, Math.PI * 2);
+    ctx.arc(laser.x, laser.y, 4, 0, Math.PI * 2);
     ctx.fillStyle = "red";
-    ctx.fill()
+    ctx.fill();
 }
