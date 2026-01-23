@@ -3,6 +3,7 @@ import { initNetwork } from "./network.js";
 import { bindState, buffer } from "./state.js";
 import { render } from "./render.js";
 import { initHUD } from "./hud.js";
+import { ParticleSystem } from "./particles.js";
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -11,6 +12,7 @@ canvas.width = 800;
 canvas.height = 600;
 
 const socket = initNetwork();
+const particleSystem = new ParticleSystem();
 bindState(socket);
 initHUD(socket);
 
@@ -26,10 +28,15 @@ initInput(canvas, () => {
     return me ? { x: me.x, y: me.y } : { x: 0, y: 0 };
 });
 
+let lastState = null;
+
 function gameLoop() {
     const interpolated = buffer.getInterpolatedState();
     if(interpolated) {
-        render(ctx, interpolated, socket.id);
+        particleSystem.checkForDeadPlayers(interpolated.players, lastState?.players);
+        particleSystem.update();
+        render(ctx, interpolated, socket.id, particleSystem);
+        lastState = interpolated;
     }
 
     requestAnimationFrame(gameLoop);

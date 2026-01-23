@@ -1,15 +1,22 @@
 import { updateHUD } from "./hud.js";
 
-export function render(ctx, state, myId) {
+export function render(ctx, state, myId, particleSystem) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    // Jogadores
+    // Jogadores vivos
     state.players.forEach(player => {
-        drawPlayer(ctx, player, player.id === myId);
+        if (player.health > 0) {
+            drawPlayer(ctx, player, player.id === myId);
+        }
     });
 
     // Laser
     state.lasers.forEach(drawLaser.bind(null, ctx));
+
+    // Desenhar partículas
+    if (particleSystem) {
+        particleSystem.draw(ctx);
+    }
 
     // Atualizar a HUD
     const myPlayer = state.players.find(p => p.id === myId);
