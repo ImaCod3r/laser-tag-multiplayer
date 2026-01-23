@@ -1,4 +1,4 @@
-import { drawHUD } from "./hud.js";
+import { updateHUD } from "./hud.js";
 
 export function render(ctx, state, myId) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -11,9 +11,11 @@ export function render(ctx, state, myId) {
     // Laser
     state.lasers.forEach(drawLaser.bind(null, ctx));
 
-    // Desenhar a HUD
-    drawHUD(ctx);
+    // Atualizar a HUD
+    const myPlayer = state.players.find(p => p.id === myId);
+    updateHUD(myPlayer);
 }
+
 
 function drawPlayer(ctx, player, isMe) {
   ctx.beginPath();

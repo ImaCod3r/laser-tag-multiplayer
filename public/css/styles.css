@@ -1,5 +1,8 @@
 body {
     background-color: #121212;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
 }
 
 #gameCanvas {
@@ -7,4 +10,31 @@ body {
     margin: 0 auto;
     background-color: #1e1e1e;
     border: 2px solid #ffffff;
+}
+
+#hud {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    color: #fff;
+    font-size: 14px;
+    z-index: 100;
+}
+
+#ping {
+    margin-bottom: 5px;
+}
+
+#health-bar-bg {
+    width: 200px;
+    height: 20px;
+    background-color: #333;
+    border: 2px solid #fff;
+    position: relative;
+}
+
+#health-bar {
+    height: 100%;
+    background-color: #00ff00;
+    transition: width 0.1s, background-color 0.1s;
 }

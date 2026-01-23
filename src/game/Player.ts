@@ -12,6 +12,10 @@ export class Player {
     speed: number = 5;
     radius: number = 15;
 
+    // Saúde
+    health: number = 100;
+    maxHealth: number = 100;
+
     input = {
         up: false,
         down: false,
@@ -59,12 +63,23 @@ export class Player {
         this.angle = this.input.angle;
     }
 
+    // Reduz a vida do jogador
+    takeDamage(damage: number) {
+        this.health = Math.max(0, this.health - damage);
+    }
+
+    // Verifica se o jogador está vivo
+    isAlive(): boolean {
+        return this.health > 0;
+    }
+
     getState() {
         return {
             id: this.id,
             x: this.x,
             y: this.y,
-            angle: this.angle
+            angle: this.angle,
+            health: this.health
         };
     }   
 }

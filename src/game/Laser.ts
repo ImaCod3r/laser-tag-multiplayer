@@ -14,6 +14,8 @@ export class Laser {
     life: number = 60; // ticks
 
     bounces: number = 3;
+    radius: number = 5; // raio do laser para colisão
+    damage: number = 25; // dano causado ao jogador
 
     constructor(ownerId: string, angle: number, startX: number = 0, startY: number = 0) {
         this.ownerId = ownerId;

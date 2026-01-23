@@ -2,6 +2,7 @@ import { Server, Socket } from 'socket.io';
 
 import { Player } from './Player';
 import { Laser } from './Laser';
+import { Physics } from './Physics';
 
 export class Game {
     players = new Map<string, Player>();
@@ -48,12 +49,39 @@ export class Game {
         
         this.lasers.forEach((laser) => { laser.update()});
 
+        // Verificar colisão entre lasers e jogadores
+        this.checkLaserCollisions();
+
         this.lasers = this.lasers.filter(laser => {
             laser.update();
             return laser.isAlive();
         });
 
         this.broadcastState();
+    }
+
+    private checkLaserCollisions() {
+        for (let i = this.lasers.length - 1; i >= 0; i--) {
+            const laser = this.lasers[i];
+            
+            for (const player of this.players.values()) {
+                // Não deixar o jogador que disparou o laser se atingir imediatamente
+                if (player.id === laser.ownerId) continue;
+
+                // Usar Physics para verificar colisão circular
+                if (Physics.checkCollision(
+                    laser.x, laser.y, laser.radius,
+                    player.x, player.y, player.radius
+                )) {
+                    // Laser atingiu o jogador
+                    player.takeDamage(laser.damage);
+                    
+                    // Remover laser
+                    this.lasers.splice(i, 1);
+                    break;
+                }
+            }
+        }
     }
 
     private broadcastState() {

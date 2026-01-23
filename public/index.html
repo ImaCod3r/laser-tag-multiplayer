@@ -1,15 +1,26 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
   <meta charset="UTF-8" />
   <title>Laser Tag 2D</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
+
 <body>
   <canvas id="gameCanvas"></canvas>
+
+  <div id="hud">
+    <div id="ping">Ping: 0 ms</div>
+    <div id="health-bar-bg">
+      <div id="health-bar"></div>
+    </div>
+
+  </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script type="module" src="/js/network.js"></script>
   <script type="module" src="/js/game.js"></script>
 </body>
+
 </html>
