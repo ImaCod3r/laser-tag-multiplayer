@@ -1,4 +1,5 @@
 import { input } from "./input/index.js";
+import { audioManager } from "./audio.js";
 
 export function initNetwork() {
     const socket = io();
@@ -17,6 +18,7 @@ export function initNetwork() {
         socket.emit("shoot", {
             angle: input.angle
         });
+        audioManager.playShootSound();
     });
 
     return socket;

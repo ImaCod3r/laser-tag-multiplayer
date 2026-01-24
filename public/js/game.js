@@ -4,6 +4,7 @@ import { bindState, buffer } from "./state.js";
 import { render } from "./render.js";
 import { initHUD, updateHUD } from "./hud.js";
 import { ParticleSystem } from "./particles.js";
+import { audioManager } from "./audio.js";
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -33,6 +34,17 @@ let lastState = null;
 function gameLoop() {
     const interpolated = buffer.getInterpolatedState();
     if(interpolated) {
+        // Verificar mortes e tocar som
+        if (lastState) {
+            for (const currentPlayer of interpolated.players) {
+                const previousPlayer = lastState.players.find(p => p.id === currentPlayer.id);
+
+                if (previousPlayer && !previousPlayer.isDead && currentPlayer.isDead) {
+                    audioManager.playDeathSound();
+                }
+            }
+        }
+
         particleSystem.checkForDeadPlayers(interpolated.players, lastState?.players);
         particleSystem.update();
         render(ctx, interpolated, socket.id, particleSystem);
