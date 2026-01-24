@@ -2,7 +2,7 @@ import { initInput } from "./input/index.js";
 import { initNetwork } from "./network.js";
 import { bindState, buffer } from "./state.js";
 import { render } from "./render.js";
-import { initHUD } from "./hud.js";
+import { initHUD, updateHUD } from "./hud.js";
 import { ParticleSystem } from "./particles.js";
 
 const canvas = document.getElementById("gameCanvas");
@@ -36,6 +36,11 @@ function gameLoop() {
         particleSystem.checkForDeadPlayers(interpolated.players, lastState?.players);
         particleSystem.update();
         render(ctx, interpolated, socket.id, particleSystem);
+        
+        // Atualizar HUD com estado do jogador e ranking
+        const me = interpolated.players.find(p => p.id === socket.id);
+        updateHUD(me, interpolated.players, socket.id);
+        
         lastState = interpolated;
     }
 

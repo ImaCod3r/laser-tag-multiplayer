@@ -17,11 +17,19 @@ function updatePingDisplay() {
     }
 }
 
-export function updateHUD(playerState) {
+export function updateHUD(playerState, allPlayers, currentPlayerId) {
     if (!playerState) {
         return;
     }
 
+    // Atualizar barra de vida
+    updateHealthBar(playerState);
+
+    // Atualizar ranking
+    updateRanking(allPlayers, currentPlayerId);
+}
+
+function updateHealthBar(playerState) {
     const health = playerState.health || 0;
     const maxHealth = playerState.maxHealth || 100;
     const healthPercent = (health / maxHealth) * 100;
@@ -40,4 +48,38 @@ export function updateHUD(playerState) {
             healthBar.style.backgroundColor = "#ff0000";
         }
     }
+}
+
+function updateRanking(players, currentPlayerId) {
+    if (!players || players.length === 0) {
+        return;
+    }
+
+    // Ordenar jogadores por kills (decrescente)
+    const sortedPlayers = [...players].sort((a, b) => (b.kills || 0) - (a.kills || 0));
+
+    const rankingList = document.getElementById("ranking-list");
+    if (!rankingList) {
+        return;
+    }
+
+    rankingList.innerHTML = "";
+
+    sortedPlayers.forEach((player, index) => {
+        const li = document.createElement("li");
+        li.className = "ranking-item";
+        
+        // Destaque do jogador atual
+        const isCurrentPlayer = player.id === currentPlayerId;
+        if (isCurrentPlayer) {
+            li.classList.add("current-player");
+        }
+
+        // Exibir informações do jogador
+        const playerLabel = isCurrentPlayer ? `${player.id} (you)` : player.id;
+        const respawnText = player.isDead ? ` - Respawning in ${Math.ceil(player.respawnTime / 1000)}s` : "";
+        li.textContent = `${index + 1}. ${playerLabel} - ${player.kills || 0} kills${respawnText}`;
+        
+        rankingList.appendChild(li);
+    });
 }

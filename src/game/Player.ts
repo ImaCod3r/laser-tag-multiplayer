@@ -16,6 +16,14 @@ export class Player {
     health: number = 100;
     maxHealth: number = 100;
 
+    // Estatísticas
+    kills: number = 0;
+
+    // Respawn
+    isDead: boolean = false;
+    respawnTime: number = 0;
+    respawnDelay: number = 10000; // 10 segundos
+
     input = {
         up: false,
         down: false,
@@ -37,6 +45,15 @@ export class Player {
     }
 
     update() {
+        // Verificar o tempo de respawn se o jogador estiver morto
+        if (this.isDead) {
+            const now = Date.now();
+            if (now - this.respawnTime >= this.respawnDelay) {
+                this.respawn();
+            }
+            return; 
+        }
+
         let dx = 0; 
         let dy = 0;
 
@@ -70,7 +87,25 @@ export class Player {
 
     // Verifica se o jogador está vivo
     isAlive(): boolean {
-        return this.health > 0;
+        return !this.isDead && this.health > 0;
+    }
+
+    die() {
+        this.isDead = true;
+        this.respawnTime = Date.now();
+        this.health = 0;
+    }
+
+    respawn() {
+        this.isDead = false;
+        this.health = this.maxHealth;
+        // Posição aleatória na arena (entre 100 e 700 em x, entre 100 e 500 em y)
+        this.x = 100 + Math.random() * 600;
+        this.y = 100 + Math.random() * 400;
+    }
+
+    addKill() {
+        this.kills++;
     }
 
     getState() {
@@ -79,7 +114,10 @@ export class Player {
             x: this.x,
             y: this.y,
             angle: this.angle,
-            health: this.health
+            health: this.health,
+            kills: this.kills,
+            isDead: this.isDead,
+            respawnTime: this.isDead ? this.respawnDelay - (Date.now() - this.respawnTime) : 0
         };
-    }   
+    }
 }

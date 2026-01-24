@@ -76,6 +76,15 @@ export class Game {
                     // Laser atingiu o jogador
                     player.takeDamage(laser.damage);
                     
+                    // Se o jogador morreu, marcar morte e dar kill ao atirador
+                    if (!player.isAlive()) {
+                        player.die();
+                        const shooter = this.players.get(laser.ownerId);
+                        if (shooter) {
+                            shooter.addKill();
+                        }
+                    }
+                    
                     // Remover laser
                     this.lasers.splice(i, 1);
                     break;

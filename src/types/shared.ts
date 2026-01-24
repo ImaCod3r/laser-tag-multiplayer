@@ -3,6 +3,9 @@ export interface PlayerState {
   x: number;
   y: number;
   health: number;
+  kills: number;
+  isDead: boolean;
+  respawnTime: number;
 }
 
 export interface LaserState {
