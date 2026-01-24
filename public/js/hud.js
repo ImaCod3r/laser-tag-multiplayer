@@ -25,6 +25,9 @@ export function updateHUD(playerState, allPlayers, currentPlayerId) {
     // Atualizar barra de vida
     updateHealthBar(playerState);
 
+    // Atualizar poder ativo
+    updateActivePowerUp(playerState);
+
     // Atualizar ranking
     updateRanking(allPlayers, currentPlayerId);
 }
@@ -48,6 +51,40 @@ function updateHealthBar(playerState) {
             healthBar.style.backgroundColor = "#ff0000";
         }
     }
+}
+
+function updateActivePowerUp(playerState) {
+    const powerUpDisplay = document.getElementById("power-up-display");
+    
+    powerUpDisplay.style.display = "block";
+    
+    if (!powerUpDisplay) {
+        return;
+    }
+
+    if (!playerState.activePowerUp) {
+        powerUpDisplay.style.display = "none";
+        return;
+    }
+
+    const powerUp = playerState.activePowerUp;
+    const timeRemaining = Math.ceil(powerUp.timeRemaining / 1000);
+    
+    let powerUpName = "";
+    let powerUpColor = "";
+
+    if (powerUp.type === "shield") {
+        powerUpName = "🛡️ Shield";
+        powerUpColor = "#00ff00";
+    } else if (powerUp.type === "invisibility") {
+        powerUpName = "👻 Invisibility";
+        powerUpColor = "#ff00ff";
+    } else if (powerUp.type === "speed") {
+        powerUpName = "⚡ Speed";
+        powerUpColor = "#ffff00";
+    }
+
+    powerUpDisplay.innerHTML = `<span style="color: ${powerUpColor}; font-weight: bold;">${powerUpName} (${timeRemaining}s)</span>`;
 }
 
 function updateRanking(players, currentPlayerId) {

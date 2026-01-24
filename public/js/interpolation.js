@@ -53,8 +53,9 @@ function interpolatedStates(a, b, t) {
                 angle: lerp(p0.angle, p1.angle, t)
             };
         }),
-        lasers: b.lasers, // Lasers nao interpolam
-        walls: b.walls // Paredes sao estaticas
+        lasers: b.lasers, 
+        walls: b.walls, 
+        loots: b.loots
     };
 }
 

@@ -109,4 +109,13 @@ export class Physics {
         }
         return { collided: false };
     }
+
+    static checkLootWallCollisions(x: number, y: number, radius: number, walls: Wall[]): boolean {
+        for (const wall of walls) {
+            if (wall.checkCollisionWithCircle(x, y, radius)) {
+                return true;
+            }
+        }
+        return false;
+    }   
 }

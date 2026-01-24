@@ -2,13 +2,20 @@ import { Server, Socket } from 'socket.io';
 
 import { Player } from './Player';
 import { Laser } from './Laser';
+import { Loot } from './Loot';
+import { PowerUp } from './PowerUp';
 import { Physics } from './Physics';
 import { Walls } from './Walls';
 
 export class Game {
     players = new Map<string, Player>();
     lasers: Laser[] = [];
+    loots: Loot[] = [];
     walls: Walls;
+
+    // Gerenciamento de spawn de loots
+    lastLootSpawnTime: number = Date.now();
+    lootSpawnInterval: number = 8000 + Math.random() * 12000; // Entre 8 e 20 segundos
 
     constructor(private io: Server) {
         this.walls = new Walls();
@@ -61,6 +68,15 @@ export class Game {
 
         // Remover lasers mortos
         this.lasers = this.lasers.filter(laser => laser.isAlive());
+
+        // Gerenciar spawn de loots
+        this.trySpawnLoot();
+
+        // Verificar colisão entre players e loots
+        this.checkLootCollisions();
+
+        // Remover loots coletados
+        this.loots = this.loots.filter(loot => !loot.isCollected);
 
         this.broadcastState();
     }
@@ -121,7 +137,49 @@ export class Game {
         this.io.emit("stateUpdate", {
             players: [...this.players.values()].map(p => p.getState()),
             lasers: this.lasers,
+            loots: this.loots.map(l => l.getState()),
             walls: this.walls.getState()
         });
+    }
+
+    private trySpawnLoot() {
+        const now = Date.now();
+        if (now - this.lastLootSpawnTime >= this.lootSpawnInterval) {
+            this.spawnLoot();
+            this.lastLootSpawnTime = now;
+            this.lootSpawnInterval = 8000 + Math.random() * 12000; // Novo intervalo
+        }
+    }
+
+    private spawnLoot() {
+        // Gerar posição aleatória na arena (evitando as bordas)
+        const x = 50 + Math.random() * 700;
+        const y = 50 + Math.random() * 500;
+
+        if(Physics.checkLootWallCollisions(x, y, 15, this.walls.getWalls())) return;
+        
+        const loot = new Loot(x, y);
+        this.loots.push(loot);
+    }
+
+    private checkLootCollisions() {
+        for (const loot of this.loots) {
+            if (loot.isCollected) continue;
+
+            for (const player of this.players.values()) {
+                if (!player.isAlive()) continue;
+
+                // Verificar colisão
+                if (Physics.checkCollision(
+                    loot.x, loot.y, loot.radius,
+                    player.x, player.y, player.radius
+                )) {
+                    // Aplicar o poder ao jogador
+                    const powerUp = new PowerUp(loot.powerType);
+                    player.activatePowerUp(powerUp);
+                    loot.isCollected = true;
+                }
+            }
+        }
     }
 }

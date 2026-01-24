@@ -1,5 +1,6 @@
 import { Physics } from "./Physics";
 import { Walls } from "./Walls";
+import { PowerUp } from "./PowerUp";
 
 export class Player {
     id: string;
@@ -11,6 +12,7 @@ export class Player {
 
     // Movimento
     speed: number = 5;
+    baseSpeed: number = 5;
     radius: number = 15;
 
     // Saúde
@@ -19,6 +21,9 @@ export class Player {
 
     // Estatísticas
     points: number = 0;
+
+    // Poderes
+    activePowerUp: PowerUp | null = null;
 
     // Respawn
     isDead: boolean = false;
@@ -46,6 +51,11 @@ export class Player {
     }
 
     update() {
+        // Atualizar poderes
+        if (this.activePowerUp && !this.activePowerUp.isActive()) {
+            this.deactivatePowerUp();
+        }
+
         // Verificar o tempo de respawn se o jogador estiver morto
         if (this.isDead) {
             const now = Date.now();
@@ -103,6 +113,12 @@ export class Player {
     respawn() {
         this.isDead = false;
         this.health = this.maxHealth;
+        
+        // Limpar poder ativo
+        if (this.activePowerUp) {
+            this.deactivatePowerUp();
+        }
+
         // Posição aleatória na arena (entre 100 e 700 em x, entre 100 e 500 em y)
         this.x = 100 + Math.random() * 600;
         this.y = 100 + Math.random() * 400;
@@ -112,6 +128,36 @@ export class Player {
         this.points++;
     }
 
+    activatePowerUp(powerUp: PowerUp) {
+        this.activePowerUp = powerUp;
+        
+        if (powerUp.type === "speed") {
+            this.speed = this.baseSpeed * 1.5; // 50% mais rápido
+        } else if (powerUp.type === "shield") {
+            // O escudo protege de um hit (máximo de saúde aumenta)
+            this.maxHealth += 25;
+            this.health = this.maxHealth;
+        }
+    }
+
+    deactivatePowerUp() {
+        if (!this.activePowerUp) return;
+
+        if (this.activePowerUp.type === "speed") {
+            this.speed = this.baseSpeed;
+        } else if (this.activePowerUp.type === "shield") {
+            // Remover o escudo extra
+            this.maxHealth = 100;
+            this.health = Math.min(this.health, this.maxHealth);
+        }
+
+        this.activePowerUp = null;
+    }
+
+    isInvisible(): boolean {
+        return this.activePowerUp !== null && this.activePowerUp.type === "invisibility";
+    }
+
     getState() {
         return {
             id: this.id,
@@ -119,9 +165,11 @@ export class Player {
             y: this.y,
             angle: this.angle,
             health: this.health,
+            maxHealth: this.maxHealth,
             points: this.points,
             isDead: this.isDead,
-            respawnTime: this.isDead ? this.respawnDelay - (Date.now() - this.respawnTime) : 0
+            respawnTime: this.isDead ? this.respawnDelay - (Date.now() - this.respawnTime) : 0,
+            activePowerUp: this.activePowerUp ? this.activePowerUp.getState() : null
         };
     }
 }

@@ -39,6 +39,35 @@ body {
     transition: width 0.1s, background-color 0.1s;
 }
 
+.power-up-container {
+    margin-top: 10px;
+    min-height: 15px;
+}
+
+#power-up-display {
+    display: none;
+    height: 100%;
+    
+    background-color: #222;
+    border: 2px solid #fff;
+
+    padding: 2px 0;
+
+    text-align: center;
+    font-weight: bold;
+
+    animation: powerUpGlow 500ms ease-in-out infinite;
+}
+
+@keyframes powerUpGlow {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.01);
+    }
+}
+
 #players-ranking {
     margin-top: 20px;
     background-color: rgba(0, 0, 0, 0.7);
