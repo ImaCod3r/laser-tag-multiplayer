@@ -50,6 +50,7 @@ export class Game {
         // Atualizar players
         this.players.forEach(player => player.update());
         
+        // Atualizar lasers
         this.lasers.forEach((laser) => { laser.update()});
 
         // Verificar colisão entre lasers e paredes
@@ -58,29 +59,26 @@ export class Game {
         // Verificar colisão entre lasers e jogadores
         this.checkLaserCollisions();
 
-        this.lasers = this.lasers.filter(laser => {
-            laser.update();
-            return laser.isAlive();
-        });
+        // Remover lasers mortos
+        this.lasers = this.lasers.filter(laser => laser.isAlive());
 
         this.broadcastState();
     }
 
     private checkLaserWallCollisions() {
-        for (let i = 0; i < this.lasers.length; i++) {
+        for (let i = this.lasers.length - 1; i >= 0; i--) {
             const laser = this.lasers[i];
             const result = Physics.checkLaserWallCollisions(laser.x, laser.y, laser.radius, this.walls.getWalls());
             
-            if (result.collided && result.bounceDir) {
-                // Aplicar ricochete
-                laser.dx = result.bounceDir.dx;
-                laser.dy = result.bounceDir.dy;
-                laser.bounces--;
-
-                // Se não tem mais bounces, remove o laser
-                if (laser.bounces < 0) {
+            if (result.collided) {
+                if (laser.bounces > 0 && result.bounceDir) {
+                    // Aplicar ricochete
+                    laser.dx = result.bounceDir.dx;
+                    laser.dy = result.bounceDir.dy;
+                    laser.bounces--;
+                } else {
+                    // Sem mais bounces, remover o laser
                     this.lasers.splice(i, 1);
-                    i--;
                 }
             }
         }

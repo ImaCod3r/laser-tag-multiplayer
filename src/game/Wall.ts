@@ -21,7 +21,7 @@ export class Wall {
         const dy = cy - closestY;
         const distance = Math.hypot(dx, dy);
 
-        return distance < radius;
+        return distance <= radius;
     }
 
     // Calcula a posição ajustada para o círculo não penetrar a parede
