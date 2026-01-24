@@ -78,7 +78,7 @@ function updateRanking(players, currentPlayerId) {
         // Exibir informações do jogador
         const playerLabel = isCurrentPlayer ? `${player.id} (you)` : player.id;
         const respawnText = player.isDead ? ` - Respawning in ${Math.ceil(player.respawnTime / 1000)}s` : "";
-        li.textContent = `${index + 1}. ${playerLabel} - ${player.kills || 0} kills${respawnText}`;
+        li.textContent = `${index + 1}. ${playerLabel} - ${player.kills || 0} Points${respawnText}`;
         
         rankingList.appendChild(li);
     });

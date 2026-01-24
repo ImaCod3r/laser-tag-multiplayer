@@ -30,7 +30,7 @@ export class Game {
 
         socket.on("shoot", (data) => {
             const player = this.players.get(socket.id);
-            if (player) {
+            if (player && player.isAlive()) {
                 this.lasers.push(new Laser(
                     socket.id, 
                     data.angle,
