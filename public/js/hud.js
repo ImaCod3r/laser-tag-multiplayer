@@ -55,8 +55,8 @@ function updateRanking(players, currentPlayerId) {
         return;
     }
 
-    // Ordenar jogadores por kills (decrescente)
-    const sortedPlayers = [...players].sort((a, b) => (b.kills || 0) - (a.kills || 0));
+    // Ordenar jogadores por pontos (decrescente)
+    const sortedPlayers = [...players].sort((a, b) => (b.points || 0) - (a.points || 0));
 
     const rankingList = document.getElementById("ranking-list");
     if (!rankingList) {
@@ -78,7 +78,7 @@ function updateRanking(players, currentPlayerId) {
         // Exibir informações do jogador
         const playerLabel = isCurrentPlayer ? `${player.id} (you)` : player.id;
         const respawnText = player.isDead ? ` - Respawning in ${Math.ceil(player.respawnTime / 1000)}s` : "";
-        li.textContent = `${index + 1}. ${playerLabel} - ${player.kills || 0} Points${respawnText}`;
+        li.textContent = `${index + 1}. ${playerLabel} - ${player.points || 0} Points${respawnText}`;
         
         rankingList.appendChild(li);
     });

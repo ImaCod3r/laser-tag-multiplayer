@@ -3,7 +3,7 @@ export interface PlayerState {
   x: number;
   y: number;
   health: number;
-  kills: number;
+  points: number;
   isDead: boolean;
   respawnTime: number;
 }

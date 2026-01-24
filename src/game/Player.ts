@@ -18,7 +18,7 @@ export class Player {
     maxHealth: number = 100;
 
     // Estatísticas
-    kills: number = 0;
+    points: number = 0;
 
     // Respawn
     isDead: boolean = false;
@@ -108,8 +108,8 @@ export class Player {
         this.y = 100 + Math.random() * 400;
     }
 
-    addKill() {
-        this.kills++;
+    addPoints() {
+        this.points++;
     }
 
     getState() {
@@ -119,7 +119,7 @@ export class Player {
             y: this.y,
             angle: this.angle,
             health: this.health,
-            kills: this.kills,
+            points: this.points,
             isDead: this.isDead,
             respawnTime: this.isDead ? this.respawnDelay - (Date.now() - this.respawnTime) : 0
         };

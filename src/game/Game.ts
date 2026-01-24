@@ -107,7 +107,7 @@ export class Game {
                         player.die();
                         const shooter = this.players.get(laser.ownerId);
                         if (shooter) {
-                            shooter.addKill();
+                            shooter.addPoints();
                         }
                     }
                     
