@@ -3,6 +3,11 @@ import { updateHUD } from "./hud.js";
 export function render(ctx, state, myId, particleSystem) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
+    // Desenhar paredes
+    if (state.walls) {
+        state.walls.forEach(wall => drawWall(ctx, wall));
+    }
+
     // Jogadores vivos
     state.players.forEach(player => {
         if (player.health > 0) {
@@ -23,6 +28,16 @@ export function render(ctx, state, myId, particleSystem) {
     updateHUD(myPlayer);
 }
 
+
+function drawWall(ctx, wall) {
+    ctx.fillStyle = "#666666";
+    ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
+    
+    // Adicionar borda
+    ctx.strokeStyle = "#999999";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(wall.x, wall.y, wall.width, wall.height);
+}
 
 function drawPlayer(ctx, player, isMe) {
   ctx.beginPath();

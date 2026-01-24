@@ -1,4 +1,5 @@
 import { Physics } from "./Physics";
+import { Walls } from "./Walls";
 
 export class Player {
     id: string;
@@ -32,7 +33,7 @@ export class Player {
         angle: 0
     }
 
-    constructor(id: string) {
+    constructor(id: string, private walls: Walls) {
         this.id = id;
     }
 
@@ -73,9 +74,12 @@ export class Player {
         const newY = this.y + dy * this.speed;
 
         // Aplicar confinamento à arena
-        const clamped = Physics.clampToArena(newX, newY, this.radius);
-        this.x = clamped.x;
-        this.y = clamped.y;
+        let clamped = Physics.clampToArena(newX, newY, this.radius);
+        
+        // Resolver colisões com paredes
+        const resolved = Physics.resolveWallCollisions(clamped.x, clamped.y, this.radius, this.walls.getWalls());
+        this.x = resolved.x;
+        this.y = resolved.y;
 
         this.angle = this.input.angle;
     }

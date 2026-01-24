@@ -3,17 +3,20 @@ import { Server, Socket } from 'socket.io';
 import { Player } from './Player';
 import { Laser } from './Laser';
 import { Physics } from './Physics';
+import { Walls } from './Walls';
 
 export class Game {
     players = new Map<string, Player>();
     lasers: Laser[] = [];
+    walls: Walls;
 
     constructor(private io: Server) {
+        this.walls = new Walls();
         setInterval(() => this.update(), 1000 / 30);
     }
 
     addPlayer(socket: Socket) {
-        this.players.set(socket.id, new Player(socket.id));
+        this.players.set(socket.id, new Player(socket.id, this.walls));
         console.log("Player added:", socket.id, "Total players:", this.players.size);
         
         // Enviar estado atualizado a todos os clientes
@@ -49,6 +52,9 @@ export class Game {
         
         this.lasers.forEach((laser) => { laser.update()});
 
+        // Verificar colisão entre lasers e paredes
+        this.checkLaserWallCollisions();
+
         // Verificar colisão entre lasers e jogadores
         this.checkLaserCollisions();
 
@@ -58,6 +64,26 @@ export class Game {
         });
 
         this.broadcastState();
+    }
+
+    private checkLaserWallCollisions() {
+        for (let i = 0; i < this.lasers.length; i++) {
+            const laser = this.lasers[i];
+            const result = Physics.checkLaserWallCollisions(laser.x, laser.y, laser.radius, this.walls.getWalls());
+            
+            if (result.collided && result.bounceDir) {
+                // Aplicar ricochete
+                laser.dx = result.bounceDir.dx;
+                laser.dy = result.bounceDir.dy;
+                laser.bounces--;
+
+                // Se não tem mais bounces, remove o laser
+                if (laser.bounces < 0) {
+                    this.lasers.splice(i, 1);
+                    i--;
+                }
+            }
+        }
     }
 
     private checkLaserCollisions() {
@@ -96,7 +122,8 @@ export class Game {
     private broadcastState() {
         this.io.emit("stateUpdate", {
             players: [...this.players.values()].map(p => p.getState()),
-            lasers: this.lasers
+            lasers: this.lasers,
+            walls: this.walls.getState()
         });
     }
 }

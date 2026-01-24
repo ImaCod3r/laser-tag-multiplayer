@@ -12,3 +12,10 @@ export interface LaserState {
   x: number;
   y: number;
 }
+
+export interface WallState {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
