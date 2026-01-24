@@ -34,19 +34,30 @@ let lastState = null;
 function gameLoop() {
     const interpolated = buffer.getInterpolatedState();
     if(interpolated) {
-        // Verificar mortes e tocar som
         if (lastState) {
             for (const currentPlayer of interpolated.players) {
                 const previousPlayer = lastState.players.find(p => p.id === currentPlayer.id);
-
+                
+                // Verificar mortes e tocar som
                 if (previousPlayer && !previousPlayer.isDead && currentPlayer.isDead) {
                     audioManager.playDeathSound();
                 }
             }
         }
 
+        // Verificar se o jogador pegou o loot
+        if (lastState) {
+            const me = interpolated.players.find(p => p.id === socket.id);
+            const previousMe = lastState.players.find(p => p.id === socket.id);
+            if (me && previousMe && !previousMe.activePowerUp && me.activePowerUp) {
+
+                audioManager.playCollectingSound();
+            }
+        }
+
         particleSystem.checkForDeadPlayers(interpolated.players, lastState?.players);
         particleSystem.update();
+
         render(ctx, interpolated, socket.id, particleSystem);
         
         // Atualizar HUD com estado do jogador e ranking

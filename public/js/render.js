@@ -49,7 +49,7 @@ function drawPlayer(ctx, player, isMe) {
   const isInvisible = player.activePowerUp && player.activePowerUp.type === "invisibility" && !isMe;
   
   if (isInvisible) {
-    ctx.globalAlpha = 0.1;
+    ctx.globalAlpha = 0.01;
   }
 
   ctx.beginPath();
