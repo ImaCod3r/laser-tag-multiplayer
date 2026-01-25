@@ -96,13 +96,18 @@ export class Game {
             const result = Physics.checkLaserWallCollisions(laser.x, laser.y, laser.radius, this.walls.getWalls());
             
             if (result.collided) {
-                if (laser.bounces > 0 && result.bounceDir) {
-                    // Aplicar ricochete
-                    laser.dx = result.bounceDir.dx;
-                    laser.dy = result.bounceDir.dy;
+                if (laser.bounces > 0 && result.normal && result.pushed) {
+                    // Ajustar posição para fora da parede para evitar múltiplas colisões
+                    laser.x = result.pushed.x;
+                    laser.y = result.pushed.y;
+
+                    // Aplicar ricochete (inverter componente baseada no normal)
+                    if (result.normal.x !== 0) laser.dx *= -1;
+                    if (result.normal.y !== 0) laser.dy *= -1;
+                    
                     laser.bounces--;
                 } else {
-                    // Sem mais bounces, remover o laser
+                    // Sem mais bounces ou colisão sem normal, remover o laser
                     this.lasers.splice(i, 1);
                 }
             }

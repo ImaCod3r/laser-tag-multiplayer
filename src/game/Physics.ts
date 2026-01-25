@@ -59,48 +59,34 @@ export class Physics {
         return { x: adjustedX, y: adjustedY };
     }
 
-    // Verifica colisão do laser com uma parede específica e retorna direção do ricochete
-    static checkLaserWallCollision(x: number, y: number, radius: number, wall: Wall): { collided: boolean; bounceDir?: { dx: number; dy: number } } {
+    // Verifica colisão do laser com uma parede específica e retorna dados da colisão
+    static checkLaserWallCollision(x: number, y: number, radius: number, wall: Wall): { collided: boolean; normal?: { x: number; y: number }; pushed?: { x: number; y: number } } {
         if (!wall.checkCollisionWithCircle(x, y, radius)) {
             return { collided: false };
         }
 
-        // Encontrar o ponto mais próximo do laser na parede
-        const closestX = Math.max(wall.x, Math.min(x, wall.x + wall.width));
-        const closestY = Math.max(wall.y, Math.min(y, wall.y + wall.height));
-
-        const dx = x - closestX;
-        const dy = y - closestY;
-
-        // Determinar se colidiu mais na horizontal ou vertical
-        const wallCenterX = wall.x + wall.width / 2;
-        const wallCenterY = wall.y + wall.height / 2;
-
-        const distToLeftRight = Math.min(
-            Math.abs(x - wall.x),
-            Math.abs(x - (wall.x + wall.width))
-        );
+        const pushed = wall.pushCircleOut(x, y, radius);
         
-        const distToTopBottom = Math.min(
-            Math.abs(y - wall.y),
-            Math.abs(y - (wall.y + wall.height))
-        );
+        // Determinar qual lado da parede está mais próximo do centro do laser
+        const distL = Math.abs(x - wall.x);
+        const distR = Math.abs(x - (wall.x + wall.width));
+        const distT = Math.abs(y - wall.y);
+        const distB = Math.abs(y - (wall.y + wall.height));
+        
+        const minDist = Math.min(distL, distR, distT, distB);
+        
+        let normal = { x: 0, y: 0 };
+        
+        if (minDist === distL) normal.x = -1;
+        else if (minDist === distR) normal.x = 1;
+        else if (minDist === distT) normal.y = -1;
+        else if (minDist === distB) normal.y = 1;
 
-        let bounceDir = { dx: 1, dy: 0 };
-
-        if (distToLeftRight < distToTopBottom) {
-            // Colidiu na horizontal
-            bounceDir = { dx: dx > 0 ? 1 : -1, dy: 0 };
-        } else {
-            // Colidiu na vertical
-            bounceDir = { dx: 0, dy: dy > 0 ? 1 : -1 };
-        }
-
-        return { collided: true, bounceDir };
+        return { collided: true, normal, pushed };
     }
 
     // Verifica colisão com todas as paredes e retorna a primeira colisão
-    static checkLaserWallCollisions(x: number, y: number, radius: number, walls: Wall[]): { collided: boolean; bounceDir?: { dx: number; dy: number } } {
+    static checkLaserWallCollisions(x: number, y: number, radius: number, walls: Wall[]): { collided: boolean; normal?: { x: number; y: number }; pushed?: { x: number; y: number } } {
         for (const wall of walls) {
             const result = this.checkLaserWallCollision(x, y, radius, wall);
             if (result.collided) {

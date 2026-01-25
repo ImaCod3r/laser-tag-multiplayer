@@ -35,7 +35,7 @@ A real-time multiplayer laser tag game with a dynamic obstacle system (walls).
 - ✅ Collision system with walls
 - ✅ Strategic wall obstacles
 - ✅ Health and damage system
-- ✅ Kills/scoring system
+- ✅ Points/scoring system
 - ✅ Automatic respawn
 - ✅ Circular-based physics and collision detection
 - ✅ Particle effects system
