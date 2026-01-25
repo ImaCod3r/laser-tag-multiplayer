@@ -40,7 +40,10 @@ A real-time multiplayer laser tag game with a dynamic obstacle system (walls).
 - ✅ Circular-based physics and collision detection
 - ✅ Particle effects system
 - ✅ HUD with player stats and leaderboard
-- ✅ Audio feedback system
+- ✅ Audio feedback system (Shoot, Death, Collect, Power-down, Join)
+- ✅ Power-ups system (Shield, Invisibility, Speed)
+- ✅ Interpolation and lag compensation
+- ✅ Custom favicon and UI improvements
 
 ## Tech Stack
 
@@ -63,12 +66,14 @@ Ensure you have the following installed on your system:
 ### Setup Instructions
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/ImaCod3r/laser-tag-multiplayer.git
    cd laser-tag-multiplayer
    ```
 
 2. **Install dependencies**:
+
    ```bash
    npm install
    ```
@@ -91,6 +96,7 @@ The server will start on `http://localhost:3000`. Open your browser and navigate
 #### Production Mode
 
 1. **Build the project**:
+
    ```bash
    npm run build
    ```
@@ -114,6 +120,7 @@ The compiled JavaScript will be in the `dist/` directory, and the server will ru
 ### Walls/Obstacles
 
 Walls are rectangular objects that serve as strategic obstacles on the map:
+
 - **Block player movement** - Players cannot pass through walls
 - **Block lasers** - Shots are stopped by walls, creating strategic cover points
 - **Strategic positioning** - Walls are placed to create challenging and balanced gameplay
@@ -126,16 +133,25 @@ Walls are rectangular objects that serve as strategic obstacles on the map:
 - **Leaderboard**: Real-time ranking displayed on HUD
 - **Respawn**: Automatic respawn after elimination with health regeneration
 
+### Power-ups
+
+Loot crates spawn periodically on the map, providing temporary advantages:
+
+- **🛡️ Shield**: Extra protection and health recovery.
+- **👻 Invisibility**: Makes the player nearly invisible to opponents (visual feedback provided to the user).
+- **⚡ Speed**: Double movement speed for a short duration.
+- **Audio Feedback**: Unique sounds for collection and when the effect expires.
+
 ## Controls
 
-| Action | Key |
-|--------|-----|
-| Move Up | `W` or `Arrow Up` |
-| Move Down | `S` or `Arrow Down` |
-| Move Left | `A` or `Arrow Left` |
-| Move Right | `D` or `Arrow Right` |
-| Shoot | `Left Mouse Click` or `Space` |
-| Aim | `Mouse Movement` |
+| Action     | Key                           |
+| ---------- | ----------------------------- |
+| Move Up    | `W` or `Arrow Up`             |
+| Move Down  | `S` or `Arrow Down`           |
+| Move Left  | `A` or `Arrow Left`           |
+| Move Right | `D` or `Arrow Right`          |
+| Shoot      | `Left Mouse Click` or `Space` |
+| Aim        | `Mouse Movement`              |
 
 ## Improvements & Future Work
 
@@ -143,7 +159,6 @@ Walls are rectangular objects that serve as strategic obstacles on the map:
 
 - [ ] **Improved Matchmaking** - Implement ELO rating system or skill-based matchmaking
 - [ ] **Game Modes** - Add different game modes (Team Deathmatch, Capture the Flag, King of the Hill)
-- [ ] **Power-ups** - Health packs, shield, speed boost, rapid fire pickups
 - [ ] **Map Editor** - Allow users to create and customize maps
 - [ ] **Player Profiles** - User accounts with stats, customization options, and loadouts
 - [ ] **Weapon Variety** - Different laser types (spread shot, sniper, pulse)

@@ -45,16 +45,6 @@ function gameLoop() {
             }
         }
 
-        // Verificar se o jogador pegou o loot
-        if (lastState) {
-            const me = interpolated.players.find(p => p.id === socket.id);
-            const previousMe = lastState.players.find(p => p.id === socket.id);
-            if (me && previousMe && !previousMe.activePowerUp && me.activePowerUp) {
-
-                audioManager.playCollectingSound();
-            }
-        }
-
         particleSystem.checkForDeadPlayers(interpolated.players, lastState?.players);
         particleSystem.update();
 
@@ -70,10 +60,18 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// Debug
-console.log("Game started, waiting for players...");
+
 socket.on("connect", () => {
-    console.log("Connected to server with ID:", socket.id);
+    console.log("Player joined the game with ID:", socket.id);
+    audioManager.playJoinSound();
+});
+
+socket.on("lootCollected", (data) => {
+    audioManager.playCollectingSound();
+});
+
+socket.on("powerDown", (data) => {
+    audioManager.playPowerDownSound();
 });
 
 gameLoop();

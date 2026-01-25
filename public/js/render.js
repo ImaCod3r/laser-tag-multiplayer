@@ -27,10 +27,6 @@ export function render(ctx, state, myId, particleSystem) {
     if (particleSystem) {
         particleSystem.draw(ctx);
     }
-
-    // Atualizar a HUD
-    const myPlayer = state.players.find(p => p.id === myId);
-    updateHUD(myPlayer);
 }
 
 
@@ -45,11 +41,12 @@ function drawWall(ctx, wall) {
 }
 
 function drawPlayer(ctx, player, isMe) {
-  // Se o jogador tem invisibilidade e não é eu, renderizar com transparência
-  const isInvisible = player.activePowerUp && player.activePowerUp.type === "invisibility" && !isMe;
+  // Se o jogador tem invisibilidade
+  const hasInvisibilityPower = player.activePowerUp && player.activePowerUp.type === "invisibility";
   
-  if (isInvisible) {
-    ctx.globalAlpha = 0.01;
+  if (hasInvisibilityPower) {
+    // Para mim, fica semi-transparente (0.5), para os outros fica quase invisível (0.1)
+    ctx.globalAlpha = isMe ? 0.5 : 0;
   }
 
   ctx.beginPath();

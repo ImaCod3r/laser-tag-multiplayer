@@ -132,7 +132,7 @@ export class Player {
         this.activePowerUp = powerUp;
         
         if (powerUp.type === "speed") {
-            this.speed = this.baseSpeed * 1.5; // 50% mais rápido
+            this.speed = this.baseSpeed * 2; // 50% mais rápido
         } else if (powerUp.type === "shield") {
             // O escudo protege de um hit (máximo de saúde aumenta)
             this.maxHealth += 25;

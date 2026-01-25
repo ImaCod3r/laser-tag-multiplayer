@@ -47,7 +47,7 @@ function interpolatedStates(a, b, t) {
             if(!p1) return p0;
 
             return {
-                ...p0,
+                ...p1, // Usar p1 como base para estados discretos (vida, power-ups, etc)
                 x: lerp(p0.x, p1.x, t),
                 y: lerp(p0.y, p1.y, t),
                 angle: lerp(p0.angle, p1.angle, t)

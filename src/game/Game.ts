@@ -55,7 +55,16 @@ export class Game {
 
     update() {
         // Atualizar players
-        this.players.forEach(player => player.update());
+        this.players.forEach(player => {
+            const hadPowerUp = player.activePowerUp !== null;
+            player.update();
+            const hasPowerUp = player.activePowerUp !== null;
+
+            // Se o poder expirou neste update
+            if (hadPowerUp && !hasPowerUp) {
+                this.io.emit("powerDown", { playerId: player.id });
+            }
+        });
         
         // Atualizar lasers
         this.lasers.forEach((laser) => { laser.update()});
@@ -178,6 +187,9 @@ export class Game {
                     const powerUp = new PowerUp(loot.powerType);
                     player.activatePowerUp(powerUp);
                     loot.isCollected = true;
+
+                    // Notificar todos os jogadores que um loot foi coletado
+                    this.io.emit("lootCollected", { playerId: player.id });
                 }
             }
         }
