@@ -12,8 +12,18 @@ export function initHUD(socket) {
 
 function updatePingDisplay() {
     const pingElement = document.getElementById("ping");
+    const pingDot = document.getElementById("ping-dot");
+
     if (pingElement) {
-        pingElement.textContent = `Ping: ${ping} ms`;
+        pingElement.textContent = `Ping ${ping} ms`;
+    }
+
+    if(ping < 300) {
+        pingDot.style.backgroundColor = "#00ff00"; // Verde
+    } else if(ping < 600) {
+        pingDot.style.backgroundColor = "#ffff00"; // Amarelo
+    } else {
+        pingDot.style.backgroundColor = "#ff0000"; // Vermelho
     }
 }
 

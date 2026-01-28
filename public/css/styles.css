@@ -21,8 +21,18 @@ body {
     z-index: 100;
 }
 
-#ping {
+.ping-container {
     margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+}
+
+#ping-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #00ff00;
+    border-radius: 50%;
+    margin-left: 5px;
 }
 
 #health-bar-bg {
