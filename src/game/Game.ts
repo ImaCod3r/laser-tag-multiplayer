@@ -23,6 +23,7 @@ export class Game {
     }
 
     addPlayer(socket: Socket) {
+        this.io.emit("join", { playerId: socket.id });
         this.players.set(socket.id, new Player(socket.id, this.walls));
         console.log("Player added:", socket.id, "Total players:", this.players.size);
         
@@ -194,7 +195,7 @@ export class Game {
                     loot.isCollected = true;
 
                     // Notificar todos os jogadores que um loot foi coletado
-                    this.io.emit("lootCollected", { playerId: player.id });
+                    this.io.emit("lootCollected", { playerId: player.id, powerType: loot.powerType });
                 }
             }
         }

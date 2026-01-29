@@ -80,17 +80,16 @@ body {
 
 #players-ranking {
     margin-top: 20px;
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 10px;
-    border: 2px solid #fff;
-    border-radius: 5px;
+    background-color: #222;
+    padding: 5px;
+    border: 1px solid #fff;
     min-width: 250px;
 }
 
 #players-ranking h3 {
     margin: 0 0 10px 0;
     font-size: 16px;
-    color: #ffff00;
+    color: #fff;
 }
 
 #ranking-list {
@@ -104,7 +103,7 @@ body {
     margin: 3px 0;
     background-color: rgba(50, 50, 50, 0.9);
     border-left: 3px solid #666;
-    font-size: 12px;
+    font-size: 10px;
     color: #ccc;
 }
 

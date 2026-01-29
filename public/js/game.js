@@ -60,14 +60,28 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-
 socket.on("connect", () => {
-    console.log("Player joined the game with ID:", socket.id);
+    audioManager.playJoinSound();
+});
+
+socket.on("join", (data) => {
     audioManager.playJoinSound();
 });
 
 socket.on("lootCollected", (data) => {
-    audioManager.playCollectingSound();
+    switch (data.powerType) {
+        case "invisibility":
+            audioManager.playInvisibilitySound();
+            break;
+        case "speed":
+            audioManager.playSpeedSound();
+            break;
+        case "shield":
+            audioManager.playShieldSound();
+            break;
+        default:
+            break;
+    }
 });
 
 socket.on("powerDown", (data) => {

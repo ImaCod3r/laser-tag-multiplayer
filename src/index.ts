@@ -6,7 +6,7 @@ import { Game } from './game/Game';
 import "dotenv/config";
 
 const app = express();
-const port =     process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 const server = http.createServer(app);
 const io = new Server(server);
 
@@ -28,4 +28,4 @@ io.on('connection', (socket) => {
 
 server.listen(port, () => {
     console.log('listening on *:3000');
-})
+});
