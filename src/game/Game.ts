@@ -47,7 +47,6 @@ export class Game {
                 ));
             }
         });
-
     }
 
     removePlayer(id: string) {

@@ -7,11 +7,19 @@
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "socket.io": "^4.8.3"
+    "express-session": "^1.19.0",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "sequelize": "^6.37.7",
+    "socket.io": "^4.8.3",
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
-    "@types/node": "^25.0.9",
+    "@types/express-session": "^1.18.2",
+    "@types/node": "^25.1.0",
+    "@types/passport": "^1.0.17",
+    "@types/passport-google-oauth20": "^2.0.17",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
