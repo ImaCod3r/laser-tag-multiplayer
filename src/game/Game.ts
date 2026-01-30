@@ -22,8 +22,8 @@ export class Game {
         setInterval(() => this.update(), 1000 / 30);
     }
 
-    addPlayer(socket: Socket) {
-        this.io.emit("join", { playerId: socket.id });
+    addPlayer(socket: Socket, userId: string) {
+        this.io.emit("join", { playerId: socket.id, userId: userId });
         this.players.set(socket.id, new Player(socket.id, this.walls));
         console.log("Player added:", socket.id, "Total players:", this.players.size);
         

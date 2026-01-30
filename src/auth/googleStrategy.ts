@@ -1,13 +1,13 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { User } from "../models/User.js";
-import { doesNotReject } from "node:assert";
+import { User } from "../models/User";
+
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID!,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     callbackURL: "/auth/google/callback"
-}, async (_accessToken, refreshToken, profile, done) => {
+}, async (_accessToken, _refreshToken, profile, done) => {
     const [user] = await User.findOrCreate({
         where: { id: profile.id },
         defaults: {
