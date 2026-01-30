@@ -115,17 +115,36 @@ function updateRanking(players, currentPlayerId) {
     sortedPlayers.forEach((player, index) => {
         const li = document.createElement("li");
         li.className = "ranking-item";
+        li.style.display = "flex";
+        li.style.alignItems = "center";
+        li.style.gap = "10px";
+        li.style.marginBottom = "5px";
         
         // Destaque do jogador atual
         const isCurrentPlayer = player.id === currentPlayerId;
         if (isCurrentPlayer) {
             li.classList.add("current-player");
+            li.style.color = "#00ffcc";
         }
 
+        // Criar elemento de avatar
+        const avatarImg = document.createElement("img");
+        avatarImg.src = player.avatar || "/assets/images/default-avatar.png"; // Fallback para avatar padrão
+        avatarImg.style.width = "24px";
+        avatarImg.style.height = "24px";
+        avatarImg.style.borderRadius = "50%";
+        avatarImg.style.border = "1px solid #555";
+        
         // Exibir informações do jogador
-        const playerLabel = isCurrentPlayer ? `${player.id} (you)` : player.id;
+        const displayName = player.username || player.id;
+        const playerLabel = isCurrentPlayer ? `${displayName} (you)` : displayName;
         const respawnText = player.isDead ? ` - Respawning in ${Math.ceil(player.respawnTime / 1000)}s` : "";
-        li.textContent = `${index + 1}. ${playerLabel} - ${player.points || 0} Points${respawnText}`;
+        
+        const textSpan = document.createElement("span");
+        textSpan.textContent = `${index + 1}. ${playerLabel} - ${player.points || 0} pts${respawnText}`;
+        
+        li.appendChild(avatarImg);
+        li.appendChild(textSpan);
         
         rankingList.appendChild(li);
     });

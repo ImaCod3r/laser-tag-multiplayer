@@ -73,6 +73,12 @@ function drawPlayer(ctx, player, isMe) {
     ctx.strokeStyle = "#fff";
     ctx.stroke();
 
+    // Desenhar Nome do Jogador
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "12px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText(player.username || player.id, player.x, player.y - 25);
+
     ctx.globalAlpha = 1.0;
 }
 

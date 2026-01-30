@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import session from "express-session";
 import passport from "passport";
@@ -8,7 +9,6 @@ import { Server } from "socket.io";
 import { sequelize } from "./db/sequelize";
 import "./auth/googleStrategy"; 
 import { Game } from "./game/Game";
-import "dotenv/config";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -24,10 +24,30 @@ app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(express.static(path.join(__dirname, "../public")));
+const ensureAuthenticated = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/login");
+};
 
-console.log(process.env.GOOGLE_CLIENT_SECRET);
+app.get("/", (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.redirect("/play");
+  }
+  res.sendFile(path.join(__dirname, "../public/landing.html"));
+});
 
+app.get("/login", (req, res) => {
+  if (req.isAuthenticated()) {
+    return res.redirect("/play");
+  }
+  res.sendFile(path.join(__dirname, "../public/login.html"));
+});
+
+app.get("/play", ensureAuthenticated, (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/game.html"));
+});
 app.get(
   "/auth/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
@@ -36,16 +56,18 @@ app.get(
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "/login.html",
-    successRedirect: "/game.html",
+    failureRedirect: "/login",
+    successRedirect: "/play",
   })
 );
 
 app.get("/logout", (req, res) => {
   req.logout(() => {
-    res.redirect("/login.html");
+    res.redirect("/");
   });
 });
+
+app.use(express.static(path.join(__dirname, "../public")));
 
 
 const io = new Server(server);

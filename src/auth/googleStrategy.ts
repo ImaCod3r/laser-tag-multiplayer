@@ -6,7 +6,7 @@ import { User } from "../models/User";
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID!,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    callbackURL: "/auth/google/callback"
+    callbackURL: process.env.GOOGLE_CALLBACK_URL
 }, async (_accessToken, _refreshToken, profile, done) => {
     const [user] = await User.findOrCreate({
         where: { id: profile.id },

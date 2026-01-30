@@ -4,6 +4,8 @@ import { PowerUp } from "./PowerUp";
 
 export class Player {
     id: string;
+    username: string;
+    avatar: string | null;
 
     // Estado
     x: number = 400;
@@ -38,8 +40,10 @@ export class Player {
         angle: 0
     }
 
-    constructor(id: string, private walls: Walls) {
+    constructor(id: string, username: string, avatar: string | null, private walls: Walls) {
         this.id = id;
+        this.username = username;
+        this.avatar = avatar;
     }
 
     // Aplica o input recebido ao estado do jogador
@@ -161,6 +165,8 @@ export class Player {
     getState() {
         return {
             id: this.id,
+            username: this.username,
+            avatar: this.avatar,
             x: this.x,
             y: this.y,
             angle: this.angle,

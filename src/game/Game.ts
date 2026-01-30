@@ -6,6 +6,7 @@ import { Loot } from './Loot';
 import { PowerUp } from './PowerUp';
 import { Physics } from './Physics';
 import { Walls } from './Walls';
+import { User } from '../models/User';
 
 export class Game {
     players = new Map<string, Player>();
@@ -22,9 +23,13 @@ export class Game {
         setInterval(() => this.update(), 1000 / 30);
     }
 
-    addPlayer(socket: Socket, userId: string) {
-        this.io.emit("join", { playerId: socket.id, userId: userId });
-        this.players.set(socket.id, new Player(socket.id, this.walls));
+    async addPlayer(socket: Socket, userId: string) {
+        const user = await User.findByPk(userId);
+        const username = user?.username || "Guest";
+        const avatar = user?.avatar || null;
+
+        this.io.emit("join", { playerId: socket.id, userId: userId, username, avatar });
+        this.players.set(socket.id, new Player(socket.id, username, avatar, this.walls));
         console.log("Player added:", socket.id, "Total players:", this.players.size);
         
         // Enviar estado atualizado a todos os clientes
