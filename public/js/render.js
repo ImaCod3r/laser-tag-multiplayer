@@ -78,6 +78,11 @@ function drawPlayer(ctx, player, isMe) {
     if (player.activePowerUp) ctx.restore();
 
     // Desenhar Nome do Jogador
+    if(player.activePowerUp && player.activePowerUp.type === "invisibility") {
+        // Não desenhar nome se invisível
+        return;
+    }
+    
     ctx.fillStyle = "#ffffff";
     ctx.font = "12px Arial";
     ctx.textAlign = "center";
