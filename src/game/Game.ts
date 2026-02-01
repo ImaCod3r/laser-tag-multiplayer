@@ -20,6 +20,7 @@ export class Game {
     // Gerenciamento de spawn de loots
     lastLootSpawnTime: number = Date.now();
     lootSpawnInterval: number = 8000 + Math.random() * 12000; // Entre 8 e 20 segundos
+    readonly MAX_LOOTS: number = 10; // Máximo de loots simultâneos
 
     constructor(private io: Server) {
         this.walls = new Walls();
@@ -124,8 +125,8 @@ export class Game {
         // Verificar colisão entre players e loots
         this.checkLootCollisions();
 
-        // Remover loots coletados
-        this.loots = this.loots.filter(loot => !loot.isCollected);
+        // Remover loots coletados ou expirados
+        this.loots = this.loots.filter(loot => !loot.isCollected && !loot.isExpired());
 
         this.broadcastState();
     }
@@ -197,6 +198,16 @@ export class Game {
     }
 
     private trySpawnLoot() {
+        // Não spawnar loots se não houver jogadores
+        if (this.players.size === 0) {
+            return;
+        }
+
+        // Não spawnar se já atingiu o limite máximo de loots
+        if (this.loots.length >= this.MAX_LOOTS) {
+            return;
+        }
+
         const now = Date.now();
         if (now - this.lastLootSpawnTime >= this.lootSpawnInterval) {
             this.spawnLoot();
