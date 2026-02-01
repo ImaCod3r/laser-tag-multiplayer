@@ -117,7 +117,11 @@ export class Game {
         this.checkLaserCollisions();
 
         // Remover lasers mortos
-        this.lasers = this.lasers.filter(laser => laser.isAlive());
+        for (let i = this.lasers.length - 1; i >= 0; i--) {
+            if (!this.lasers[i].isAlive()) {
+                this.lasers.splice(i, 1);
+            }
+        }
 
         // Gerenciar spawn de loots
         this.trySpawnLoot();
@@ -126,7 +130,11 @@ export class Game {
         this.checkLootCollisions();
 
         // Remover loots coletados ou expirados
-        this.loots = this.loots.filter(loot => !loot.isCollected && !loot.isExpired());
+        for (let i = this.loots.length - 1; i >= 0; i--) {
+            if (this.loots[i].isCollected || this.loots[i].isExpired()) {
+                this.loots.splice(i, 1);
+            }
+        }
 
         this.broadcastState();
     }
@@ -217,14 +225,24 @@ export class Game {
     }
 
     private spawnLoot() {
-        // Gerar posição aleatória na arena (evitando as bordas)
-        const x = 50 + Math.random() * 700;
-        const y = 50 + Math.random() * 500;
-
-        if(Physics.checkLootWallCollisions(x, y, 15, this.walls.getWalls())) return;
+        let attempts = 0;
+        const maxAttempts = 10;
         
-        const loot = new Loot(x, y);
-        this.loots.push(loot);
+        while (attempts < maxAttempts) {
+            // Gerar posição aleatória na arena (evitando as bordas)
+            const x = 50 + Math.random() * 700;
+            const y = 50 + Math.random() * 500;
+
+            // Verificar se colide com paredes
+            // Usamos um raio um pouco maior (20) para garantir que não nasça "colado" na parede
+            if (!Physics.checkLootWallCollisions(x, y, 20, this.walls.getWalls())) {
+                const loot = new Loot(x, y);
+                this.loots.push(loot);
+                break; // Sucesso, sai do loop
+            }
+            
+            attempts++;
+        }
     }
 
     private checkLootCollisions() {
@@ -243,6 +261,8 @@ export class Game {
                     const powerUp = new PowerUp(loot.powerType);
                     player.activatePowerUp(powerUp);
                     loot.isCollected = true;
+                    
+                    console.log(`Loot coletado! Player: ${player.id}, Power: ${loot.powerType}`);
 
                     // Notificar todos os jogadores que um loot foi coletado
                     this.io.emit("lootCollected", { playerId: player.id, powerType: loot.powerType });

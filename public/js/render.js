@@ -41,12 +41,13 @@ function drawWall(ctx, wall) {
 }
 
 function drawPlayer(ctx, player, isMe) {
-    ctx.save();
-
+    const angle = player.angle || 0;
+    
     if (player.activePowerUp) {
+        ctx.save();
         switch (player.activePowerUp.type) {
             case "invisibility":
-                renderInvisibilityEffect(ctx, isMe);
+                ctx.globalAlpha = isMe ? 0.3 : 0.1;
                 break;
             case "shield":
                 renderShieldEffect(ctx, player, isMe);
@@ -54,96 +55,75 @@ function drawPlayer(ctx, player, isMe) {
             case "speed":
                 renderSpeedEffect(ctx, player);
                 break;
-            default:
-                ctx.globalAlpha = 1.0;
         }
     }
 
+    // Desenhar corpo (fillRect é mais rápido que arc, mas manteremos círculo pro corpo por estética, otimizando o resto)
     ctx.beginPath();
     ctx.arc(player.x, player.y, 12, 0, Math.PI * 2);
     ctx.fillStyle = isMe ? "#00ffcc" : "#ffcc00";
     ctx.fill();
 
+    // Direção (Linha simples)
     ctx.beginPath();
     ctx.moveTo(player.x, player.y);
     ctx.lineTo(
-        player.x + Math.cos(player.angle) * 30,
-        player.y + Math.sin(player.angle) * 30
+        player.x + Math.cos(angle) * 30,
+        player.y + Math.sin(angle) * 30
     );
     ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 2;
     ctx.stroke();
+
+    if (player.activePowerUp) ctx.restore();
 
     // Desenhar Nome do Jogador
     ctx.fillStyle = "#ffffff";
     ctx.font = "12px Arial";
     ctx.textAlign = "center";
-    ctx.fillText(player.username || player.id, player.x, player.y - 25);
-
-    ctx.globalAlpha = 1.0;
-}
-
-function renderInvisibilityEffect(ctx, isMe) {
-    const alpha = isMe ? 0.3 : 0.1;
-    ctx.globalAlpha = alpha;
+    ctx.fillText(player.username || "Player", player.x, player.y - 25);
 }
 
 function renderShieldEffect(ctx, player, isMe) {
     ctx.beginPath();
-    ctx.arc(player.x, player.y, 20, 0, Math.PI * 2);
+    ctx.arc(player.x, player.y, 18, 0, Math.PI * 2);
     ctx.strokeStyle = isMe ? "#00ffff" : "#ffcc00";
+    ctx.lineWidth = 2;
     ctx.stroke();
 }
 
 function renderSpeedEffect(ctx, player) {
-    const ghostCount = 4;
-    const spacing = 6;
-
+    const ghostCount = 3; // Reduzido de 4 para 3
+    ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
     for (let i = 1; i <= ghostCount; i++) {
-        const alpha = 0.15 * (1 - i / ghostCount);
-
-        const offsetX = Math.cos(player.angle + Math.PI) * spacing * i;
-        const offsetY = Math.sin(player.angle + Math.PI) * spacing * i;
-
-        ctx.save();
-        ctx.globalAlpha = alpha;
-        ctx.translate(player.x + offsetX, player.y + offsetY);
-        ctx.rotate(player.angle);
-
-        ctx.fillStyle = "#ffffff";
+        const offsetX = Math.cos(player.angle + Math.PI) * 8 * i;
+        const offsetY = Math.sin(player.angle + Math.PI) * 8 * i;
         ctx.beginPath();
-        ctx.arc(0, 0, 12, 0, Math.PI * 2);
+        ctx.arc(player.x + offsetX, player.y + offsetY, 10, 0, Math.PI * 2);
         ctx.fill();
-
-        ctx.restore();
     }
 }
 
-
 function drawLaser(ctx, laser) {
-    ctx.beginPath();
-    ctx.arc(laser.x, laser.y, 4, 0, Math.PI * 2);
-    ctx.fillStyle = "red";
-    ctx.fill();
+    ctx.fillStyle = "#ff3333";
+    // Usar fillRect para lasers (muito mais rápido que arc)
+    ctx.fillRect(laser.x - 2, laser.y - 2, 4, 4);
 }
 
 function drawLoot(ctx, loot) {
-    let color;
+    let color = "#fff";
+    if (loot.powerType === "shield") color = "#00ff00";
+    else if (loot.powerType === "invisibility") color = "#ff00ff";
+    else if (loot.powerType === "speed") color = "#ffff00";
 
-    if (loot.powerType === "shield") {
-        color = "#00ff00";
-    } else if (loot.powerType === "invisibility") {
-        color = "#ff00ff";
-    } else if (loot.powerType === "speed") {
-        color = "#ffff00";
-    }
-
+    ctx.fillStyle = color;
     ctx.beginPath();
-    ctx.arc(loot.x, loot.y, loot.radius, 0, Math.PI * 2);
+    ctx.arc(loot.x, loot.y, 10, 0, Math.PI * 2); // Corrigido x/y se houver erro e tamanho fixo
     ctx.fillStyle = color;
     ctx.fill();
-
-    // Desenhar borda
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2;
+    
+    // Adicionar um brilho simples sem usar shadowBlur (que é lento)
+    ctx.strokeStyle = "rgba(255,255,255,0.5)";
+    ctx.lineWidth = 1;
     ctx.stroke();
 }

@@ -3,7 +3,7 @@ export type PowerUpType = "shield" | "invisibility" | "speed";
 export class Loot {
     x: number;
     y: number;
-    radius: number = 12;
+    radius: number = 15;
     powerType: PowerUpType;
     isCollected: boolean = false;
     createdAt: number;
