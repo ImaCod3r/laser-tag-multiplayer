@@ -15,6 +15,7 @@ export function initNetwork() {
     }, 1000 / 30);
 
     window.addEventListener("mousedown", () => {
+        if (input.isChatting) return;
         socket.emit("shoot", {
             angle: input.angle
         });

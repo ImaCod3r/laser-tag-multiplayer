@@ -7,6 +7,7 @@ export const input = {
     left: false,
     right: false,
     angle: 0,
+    isChatting: false,
 }
 
 export function initInput(canvas, getPlayerPosition) {

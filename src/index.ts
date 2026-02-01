@@ -9,6 +9,7 @@ import { Server } from "socket.io";
 import { sequelize } from "./db/sequelize";
 import "./auth/googleStrategy"; 
 import { Game } from "./game/Game";
+import { User } from "./models/User";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -98,6 +99,18 @@ io.on("connection", (socket) => {
   game.addPlayer(socket, userId);
 
   socket.on("pingCheck", (cb) => cb());
+
+  socket.on("chatMessage", async (message: string) => {
+    const user = await User.findByPk(userId);
+    const username = user?.username || "Guest";
+    
+    io.emit("chatMessage", {
+      userId,
+      username,
+      message: message.substring(0, 100), // Limite de 100 caracteres
+      timestamp: Date.now()
+    });
+  });
 
   socket.on("disconnect", () => {
     console.log("user disconnected:", socket.id);

@@ -5,6 +5,7 @@ import { render } from "./render.js";
 import { initHUD, updateHUD } from "./hud.js";
 import { ParticleSystem } from "./particles.js";
 import { audioManager } from "./audio.js";
+import { initChat } from "./chat.js";
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -16,6 +17,7 @@ const socket = initNetwork();
 const particleSystem = new ParticleSystem();
 bindState(socket);
 initHUD(socket);
+initChat(socket);
 
 initInput(canvas, () => {
     const interpolatedState = buffer.getInterpolatedState();
