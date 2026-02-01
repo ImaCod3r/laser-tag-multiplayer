@@ -30,9 +30,129 @@
     </div>
   </div>
 
+  <!-- Botão de Ajuda -->
+  <button id="help-button" class="help-button" aria-label="Ajuda">?</button>
+
+  <!-- Botão de Logout -->
+  <a href="/logout" class="logout-button" aria-label="Sair">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+      <polyline points="16 17 21 12 16 7"/>
+      <line x1="21" y1="12" x2="9" y2="12"/>
+    </svg>
+    Sair
+  </a>
+
+  <!-- Modal de Tutorial -->
+  <div id="tutorial-modal" class="tutorial-modal">
+    <div class="tutorial-content">
+      <button id="close-tutorial" class="close-tutorial">&times;</button>
+      <h2>Como Jogar</h2>
+      
+      <div class="tutorial-section">
+        <h3>Controles</h3>
+        
+        <!-- Controles WASD -->
+        <div class="control-group">
+          <div class="control-label">Movimento</div>
+          <div class="keyboard-controls">
+            <div class="key-row">
+              <div class="key">W</div>
+            </div>
+            <div class="key-row">
+              <div class="key">A</div>
+              <div class="key">S</div>
+              <div class="key">D</div>
+            </div>
+          </div>
+          <div class="control-hint">ou use as setas direcionais</div>
+        </div>
+
+        <!-- Controle Mouse -->
+        <div class="control-group">
+          <div class="control-label">Mira</div>
+          <div class="mouse-control">
+            <svg width="40" height="60" viewBox="0 0 40 60" fill="none">
+              <rect x="1" y="1" width="38" height="58" rx="12" stroke="#fff" stroke-width="2" fill="#444"/>
+              <line x1="20" y1="1" x2="20" y2="25" stroke="#fff" stroke-width="2"/>
+              <circle cx="20" cy="15" r="4" fill="#fff"/>
+            </svg>
+            <div class="control-hint">Mova o mouse para mirar</div>
+          </div>
+        </div>
+
+        <!-- Controle Clique -->
+        <div class="control-group">
+          <div class="control-label">Atirar</div>
+          <div class="mouse-control">
+            <svg width="40" height="60" viewBox="0 0 40 60" fill="none">
+              <rect x="1" y="1" width="38" height="58" rx="12" stroke="#fff" stroke-width="2" fill="#444"/>
+              <line x1="20" y1="1" x2="20" y2="25" stroke="#fff" stroke-width="2"/>
+              <rect x="2" y="2" width="16" height="23" rx="12" fill="#fff" opacity="0.3"/>
+            </svg>
+            <div class="control-hint">Clique esquerdo</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tutorial-section">
+        <h3>Objetivo</h3>
+        <p>Elimine outros jogadores com seu laser para ganhar pontos e subir no ranking.</p>
+      </div>
+
+      <div class="tutorial-section">
+        <h3>Power-Ups</h3>
+        <p>Colete power-ups que aparecem na arena:</p>
+        <ul>
+          <li>Escudo - Proteção contra danos</li>
+          <li>Velocidade - Movimento mais rápido</li>
+          <li>Invisibilidade - Fique temporariamente invisível</li>
+        </ul>
+      </div>
+
+      <div class="tutorial-section">
+        <h3>Dicas</h3>
+        <ul>
+          <li>Use as paredes para se proteger</li>
+          <li>Lasers ricocheteiam nas paredes</li>
+          <li>Fique de olho nos power-ups</li>
+          <li>Sua vida está no canto superior esquerdo</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
   <script src="/socket.io/socket.io.js"></script>
   <script type="module" src="/js/network.js"></script>
   <script type="module" src="/js/game.js"></script>
+  
+  <!-- Script do Tutorial -->
+  <script>
+    const helpButton = document.getElementById('help-button');
+    const tutorialModal = document.getElementById('tutorial-modal');
+    const closeTutorial = document.getElementById('close-tutorial');
+
+    helpButton.addEventListener('click', () => {
+      tutorialModal.classList.add('show');
+    });
+
+    closeTutorial.addEventListener('click', () => {
+      tutorialModal.classList.remove('show');
+    });
+
+    tutorialModal.addEventListener('click', (e) => {
+      if (e.target === tutorialModal) {
+        tutorialModal.classList.remove('show');
+      }
+    });
+
+    // Fechar com ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && tutorialModal.classList.contains('show')) {
+        tutorialModal.classList.remove('show');
+      }
+    });
+  </script>
 </body>
 
 </html>

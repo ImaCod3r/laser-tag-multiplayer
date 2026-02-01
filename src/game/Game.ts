@@ -14,6 +14,9 @@ export class Game {
     loots: Loot[] = [];
     walls: Walls;
 
+    // Mapeamento de userId para socketId para prevenir múltiplas conexões
+    private userSessions = new Map<string, string>();
+
     // Gerenciamento de spawn de loots
     lastLootSpawnTime: number = Date.now();
     lootSpawnInterval: number = 8000 + Math.random() * 12000; // Entre 8 e 20 segundos
@@ -24,17 +27,39 @@ export class Game {
     }
 
     async addPlayer(socket: Socket, userId: string) {
+        // Verificar se o usuário já está conectado em outra sessão
+        const existingSocketId = this.userSessions.get(userId);
+        if (existingSocketId) {
+            console.log(`Usuário ${userId} já conectado no socket ${existingSocketId}. Desconectando sessão antiga.`);
+            
+            // Desconectar o socket antigo
+            const existingSocket = this.io.sockets.sockets.get(existingSocketId);
+            if (existingSocket) {
+                existingSocket.emit("duplicateSession", { 
+                    message: "Você foi desconectado porque entrou em outra aba." 
+                });
+                existingSocket.disconnect(true);
+            }
+            
+            // Remover o player antigo
+            this.removePlayer(existingSocketId);
+        }
+
         const user = await User.findByPk(userId);
         const username = user?.username || "Guest";
         const avatar = user?.avatar || null;
 
+        // Registrar a nova sessão do usuário
+        this.userSessions.set(userId, socket.id);
+
         this.io.emit("join", { playerId: socket.id, userId: userId, username, avatar });
         this.players.set(socket.id, new Player(socket.id, username, avatar, this.walls));
-        console.log("Player added:", socket.id, "Total players:", this.players.size);
+        console.log("Player added:", socket.id, "userId:", userId, "Total players:", this.players.size);
         
         // Enviar estado atualizado a todos os clientes
         this.broadcastState();
 
+        
         socket.on("move", (input) => {
             const player = this.players.get(socket.id);
 
@@ -55,7 +80,17 @@ export class Game {
     }
 
     removePlayer(id: string) {
+        // Remover o player
         this.players.delete(id);
+        
+        // Limpar o mapeamento de sessão do usuário
+        for (const [userId, socketId] of this.userSessions.entries()) {
+            if (socketId === id) {
+                this.userSessions.delete(userId);
+                console.log(`Sessão removida para userId: ${userId}`);
+                break;
+            }
+        }
     }
 
     update() {

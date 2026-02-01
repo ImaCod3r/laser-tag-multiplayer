@@ -88,4 +88,12 @@ socket.on("powerDown", (data) => {
     audioManager.playPowerDownSound();
 });
 
+socket.on("duplicateSession", (data) => {
+    alert(data.message || "Você foi desconectado porque entrou em outra aba.");
+    // Opcional: redirecionar para a página inicial após um pequeno delay
+    setTimeout(() => {
+        window.location.href = "/";
+    }, 1000);
+});
+
 gameLoop();

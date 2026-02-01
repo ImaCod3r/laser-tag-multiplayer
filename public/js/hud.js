@@ -137,8 +137,8 @@ function updateRanking(players, currentPlayerId) {
         
         // Exibir informações do jogador
         const displayName = player.username || player.id;
-        const playerLabel = isCurrentPlayer ? `${displayName} (you)` : displayName;
-        const respawnText = player.isDead ? ` - Respawning in ${Math.ceil(player.respawnTime / 1000)}s` : "";
+        const playerLabel = isCurrentPlayer ? `${displayName} (Eu)` : displayName;
+        const respawnText = player.isDead ? ` - Revivendo em ${Math.ceil(player.respawnTime / 1000)}s` : "";
         
         const textSpan = document.createElement("span");
         textSpan.textContent = `${index + 1}. ${playerLabel} - ${player.points || 0} pts${respawnText}`;
